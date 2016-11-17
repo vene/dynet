@@ -9,7 +9,7 @@ HIDDEN_DIM = 50  #1024
 VOCAB_SIZE = 0
 
 from collections import defaultdict
-from itertools import count, izip
+from itertools import count
 import sys
 import util
 
@@ -35,7 +35,7 @@ class RNNLanguageModel:
         expected_outputs = [int(nw) for nw in sent[1:]]
         outputs = state.transduce(inputs)
         r_ts = ((bias + (R * y_t)) for y_t in outputs)
-        errs = [pickneglogsoftmax(r_t, eo) for r_t, eo in izip(r_ts, expected_outputs)]
+        errs = [pickneglogsoftmax(r_t, eo) for r_t, eo in zip(r_ts, expected_outputs)]
         nerr = esum(errs)
         return nerr
 
@@ -68,7 +68,6 @@ class RNNLanguageModel:
 if __name__ == '__main__':
     train = util.CharsCorpusReader(sys.argv[1],begin="<s>")
     vocab = util.Vocab.from_corpus(train)
-    
     VOCAB_SIZE = vocab.size()
 
     model = Model()
@@ -80,16 +79,16 @@ if __name__ == '__main__':
     train = list(train)
 
     chars = loss = 0.0
-    for ITER in xrange(100):
+    for ITER in range(100):
         random.shuffle(train)
         for i,sent in enumerate(train):
             _start = time.time()
             if i % 50 == 0:
                 sgd.status()
-                if chars > 0: print loss / chars,
-                for _ in xrange(1):
+                if chars > 0: print(loss / chars),
+                for _ in range(1):
                     samp = lm.sample(first=vocab.w2i["<s>"],stop=vocab.w2i["\n"])
-                    print "".join([vocab.i2w[c] for c in samp]).strip()
+                    print("".join([vocab.i2w[c] for c in samp]).strip())
                 loss = 0.0
                 chars = 0.0
                 
@@ -100,6 +99,6 @@ if __name__ == '__main__':
             errs.backward()
             sgd.update(1.0)
             #print "TM:",(time.time() - _start)/len(sent)
-        print "ITER",ITER,loss
+        print("ITER",ITER,loss)
         sgd.status()
         sgd.update_epoch(1.0)
