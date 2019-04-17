@@ -61,7 +61,7 @@ if (MKL OR MKL_ROOT)
 endif()
 
 # There are about 30 files compiled for GPU. We merge them into less
-# for faster compilation. Set to 0 to mean no merging, or k to merge into k files. 
+# for faster compilation. Set to 0 to mean no merging, or k to merge into k files.
 if(NOT DEFINED GPU_NUMFILES)
   if(MSVC)
     set(GPU_NUMFILES 1)   # MSVC does serial compilation of CUDA, so minimize overhead
@@ -217,3 +217,8 @@ if(ENABLE_BOOST)
   add_subdirectory(tests)
   enable_testing()
 endif()
+
+export(TARGETS dynet NAMESPACE Dynet:: FILE DynetTargets.cmake)
+export(PACKAGE Dynet)
+file(WRITE ${CMAKE_BINARY_DIR}/DynetConfig.cmake
+    include(\"\${CMAKE_CURRENT_LIST_DIR}/DynetTargets.cmake\"))

@@ -163,7 +163,7 @@ weight-decay.h
 if(ENABLE_BOOST)
   list(APPEND dynet_library_HDRS mp.h)
 endif()
-  
+
 set(dynet_gpu_mergeable_SRCS
     nodes-activations
     nodes-affinetransform
@@ -302,6 +302,9 @@ else()
   target_link_libraries(dynet ${LIBS})
 endif(WITH_CUDA_BACKEND)
 
+set_property(TARGET dynet APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>)
+
 install(FILES ${dynet_library_HDRS} DESTINATION include/dynet)
 install(TARGETS dynet DESTINATION lib)
 if(WITH_CUDA_BACKEND)
@@ -309,3 +312,4 @@ if(WITH_CUDA_BACKEND)
 endif(WITH_CUDA_BACKEND)
 
 # target_compile_features(dynet PRIVATE cxx_range_for)
+
